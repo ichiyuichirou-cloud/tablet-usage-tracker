@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>タブレット利用記録</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cover: #1f3a34;
+    --cover-dark: #0f211d;
+    --cover-edge: #2c4d45;
+    --paper: #f3eee1;
+    --paper-hi: #faf7ee;
+    --ink: #2b2620;
+    --ink-soft: #6b6357;
+    --line: #dcd2ba;
+    --stamp: #b23a2e;
+    --stamp-dark: #7e2419;
+    --gold: #c9a227;
+    --gold-soft: #eddb96;
+    --gold-hi: #fff3c4;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--ink);
+    overscroll-behavior: none;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(12px, 3vw, 32px);
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 24% -10%, var(--cover-edge) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 110%, #223f38 0%, transparent 50%),
+      linear-gradient(160deg, var(--cover) 0%, var(--cover-dark) 100%);
+  }
+
+  /* 紙のノイズ・木目の質感 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 20%, transparent 30%, rgba(0,0,0,0.45) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    width: min(520px, 100%);
+    animation: riseIn 0.65s cubic-bezier(.2,.9,.25,1) both;
+  }
+
+  @keyframes riseIn {
+    0% { opacity: 0; transform: translateY(26px) scale(0.97) rotate(-0.6deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  }
+
+  .ledger {
+    background: linear-gradient(155deg, var(--paper-hi), var(--paper) 45%, #ece5d2 100%);
+    border-radius: 16px 16px 10px 10px;
+    position: relative;
+    overflow: hidden;
+    padding: 34px 28px 28px;
+    box-shadow:
+      0 1px 0 var(--gold-hi) inset,
+      0 0 0 1px rgba(0,0,0,0.06),
+      0 40px 70px -24px rgba(0,0,0,0.65),
+      0 10px 22px -10px rgba(0,0,0,0.4);
+  }
+
+  .ledger::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 43px,
+      var(--line) 43px,
+      var(--line) 44px
+    );
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .spine {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 16px;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 10px, rgba(43,38,32,0.14) 10px 11px),
+      linear-gradient(to right, var(--gold-dark, #a9832055), transparent),
+      linear-gradient(to bottom, var(--gold), var(--gold-soft) 40%, var(--gold) 60%, var(--gold-soft));
+    box-shadow: 3px 0 10px rgba(0,0,0,0.25), inset -2px 0 4px rgba(0,0,0,0.2);
+  }
+
+  .corner-wear {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(43,38,32,0.10) 0, transparent 18%),
+      radial-gradient(circle at 100% 100%, rgba(43,38,32,0.10) 0, transparent 18%);
+  }
+
+  header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 900;
+    font-size: clamp(25px, 6vw, 31px);
+    margin: 8px 0 3px;
+    letter-spacing: 0.04em;
+    background: linear-gradient(180deg, #4a3f1a 0%, var(--gold) 45%, #8a6a12 55%, var(--gold-hi) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.5)) drop-shadow(0 -1px 0 rgba(0,0,0,0.35));
+  }
+
+  .sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .step { position: relative; margin-bottom: 20px; transition: opacity 0.25s ease; }
+
+  .step-label {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 11px;
+    color: var(--ink);
+  }
+
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .chip {
+    flex: 1 1 auto;
+    min-width: 74px;
+    text-align: center;
+    padding: 13px 14px;
+    border-radius: 9px;
+    border: 1.5px solid var(--ink);
+    background: rgba(255,255,255,0.4);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.12s cubic-bezier(.3,1.6,.5,1), box-shadow 0.18s ease;
+    box-shadow: 0 2px 0 rgba(43,38,32,0.12);
+  }
+
+  .chip:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(43,38,32,0.15); }
+  .chip:active { transform: scale(0.95) translateY(1px); }
+
+  .chip.selected {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 2px 0 var(--stamp-dark), 0 0 0 2px var(--gold) inset;
+    transform: translateY(1px);
+  }
+
+  .step[data-locked="true"] { opacity: 0.32; pointer-events: none; filter: saturate(0.4); }
+
+  .confirm-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 28px;
+    position: relative;
+  }
+
+  .stamp-ring {
+    position: relative;
+    width: 148px;
+    height: 148px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stamp-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px dashed var(--gold);
+    opacity: 0.6;
+    animation: spin 22s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .stamp-btn {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 3px solid var(--stamp);
+    background: radial-gradient(circle at 35% 30%, #fff 0%, var(--paper) 55%);
+    color: var(--stamp);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 900;
+    font-size: 19px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    box-shadow: 0 7px 0 var(--stamp-dark), 0 14px 22px -8px rgba(178,58,46,0.5);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.2s ease;
+  }
+
+  .stamp-btn:not(:disabled) { animation: readyPulse 2.4s ease-in-out infinite; }
+
+  @keyframes readyPulse {
+    0%, 100% { box-shadow: 0 7px 0 var(--stamp-dark), 0 14px 22px -8px rgba(178,58,46,0.5); }
+    50% { box-shadow: 0 7px 0 var(--stamp-dark), 0 14px 30px -6px rgba(178,58,46,0.75); }
+  }
+
+  .stamp-btn:disabled {
+    animation: none;
+    border-color: var(--ink-soft);
+    color: var(--ink-soft);
+    box-shadow: 0 7px 0 var(--line);
+    cursor: not-allowed;
+    filter: saturate(0.5);
+  }
+
+  .stamp-btn:not(:disabled):active {
+    transform: translateY(7px);
+    box-shadow: 0 0 0 var(--stamp-dark);
+  }
+
+  .hint {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+    min-height: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.09em;
+    opacity: 0.8;
+  }
+
+  /* --- スタンプ演出 --- */
+  .stamp-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 33, 29, 0.6);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 50;
+  }
+  .stamp-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .stamp-fx { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+
+  .stamp-mark {
+    width: 178px;
+    height: 178px;
+    border-radius: 50%;
+    border: 6px solid var(--stamp);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(243, 238, 225, 0.95);
+    color: var(--stamp);
+    transform: scale(2.4) rotate(-16deg);
+    opacity: 0;
+    filter: url(#inkEdge) blur(1px);
+  }
+
+  .stamp-ghost {
+    position: absolute;
+    width: 178px;
+    height: 178px;
+    border-radius: 50%;
+    border: 3px solid var(--stamp);
+    opacity: 0;
+    transform: rotate(-4deg) scale(1);
+  }
+
+  .stamp-overlay.show .stamp-mark { animation: stampDown 0.42s cubic-bezier(.2,1.4,.4,1) forwards; }
+  .stamp-overlay.show .stamp-ghost { animation: ghostPrint 0.5s ease-out 0.05s forwards; }
+
+  @keyframes stampDown {
+    0% { transform: scale(2.4) rotate(-16deg); opacity: 0; filter: url(#inkEdge) blur(3px); }
+    55% { transform: scale(0.93) rotate(-4deg); opacity: 1; filter: url(#inkEdge) blur(0); }
+    75% { transform: scale(1.06) rotate(-5deg); }
+    100% { transform: scale(1) rotate(-4deg); opacity: 1; }
+  }
+  @keyframes ghostPrint {
+    0% { opacity: 0; transform: rotate(-4deg) scale(0.9); }
+    40% { opacity: 0.35; }
+    100% { opacity: 0; transform: rotate(-6deg) scale(1.18); }
+  }
+
+  .stamp-mark .kanji { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: 46px; line-height: 1; }
+  .stamp-mark .detail { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 6px; letter-spacing: 0.05em; text-align: center; padding: 0 10px; }
+
+  .spark {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--stamp);
+    opacity: 0;
+    left: 50%; top: 50%;
+  }
+  .stamp-overlay.show .spark { animation: sparkOut 0.6s ease-out forwards; }
+  .spark:nth-child(1) { --tx: -70px; --ty: -18px; animation-delay: 0.32s; }
+  .spark:nth-child(2) { --tx: 68px; --ty: -30px; animation-delay: 0.34s; }
+  .spark:nth-child(3) { --tx: -50px; --ty: 60px; animation-delay: 0.3s; }
+  .spark:nth-child(4) { --tx: 60px; --ty: 55px; animation-delay: 0.36s; }
+  .spark:nth-child(5) { --tx: 0px; --ty: -74px; animation-delay: 0.33s; }
+  .spark:nth-child(6) { --tx: -84px; --ty: 10px; animation-delay: 0.38s; }
+  @keyframes sparkOut {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.3); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stamp-mark, .stamp-ghost, .chip, .stamp-btn, .stage, .stamp-ring::before, .spark { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="inkEdge">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/>
+    </filter>
+  </svg>
+
+  <div class="stage">
+    <div class="ledger">
+      <div class="spine"></div>
+      <div class="corner-wear"></div>
+
+      <header>
+        <div class="eyebrow">TABLET USAGE LOG</div>
+        <h1>タブレット利用記録</h1>
+        <div class="sub">使い終わったら、下から選んでスタンプを押してください</div>
+      </header>
+
+      <div class="step" id="step-grade">
+        <div class="step-label"><span class="step-num">1</span>学年</div>
+        <div class="chips" id="grade-chips"></div>
+      </div>
+
+      <div class="step" id="step-class" data-locked="true">
+        <div class="step-label"><span class="step-num">2</span>クラス</div>
+        <div class="chips" id="class-chips"></div>
+      </div>
+
+      <div class="step" id="step-period" data-locked="true">
+        <div class="step-label"><span class="step-num">3</span>時間目</div>
+        <div class="chips" id="period-chips"></div>
+      </div>
+
+      <div class="confirm-area">
+        <div class="stamp-ring">
+          <button class="stamp-btn" id="stamp-btn" disabled>記録する</button>
+        </div>
+        <div class="hint" id="hint">学年・クラス・時間目を選んでください</div>
+      </div>
+
+      <div class="footer-note">選び直したいときは、もう一度タップしてください</div>
+    </div>
+  </div>
+
+  <div class="stamp-overlay" id="stamp-overlay">
+    <div class="stamp-fx">
+      <div class="stamp-ghost"></div>
+      <div class="stamp-mark">
+        <div class="kanji">済</div>
+        <div class="detail" id="stamp-detail"></div>
+      </div>
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+      <span class="spark"></span><span class="spark"></span><span class="spark"></span>
+    </div>
+  </div>
+
+<script>
+  const API_URL = "https://script.google.com/a/macros/school.yachiyo.ed.jp/s/AKfycbx39ovSBCuCR45RS3vUkKBWdgCh95K1_11ZWdhgNSF3eJlGRPQmZ8m9codI7NHvN1EK/exec";
+
+  const state = { grade: null, className: null, period: null, config: null };
+
+  const gradeChips = document.getElementById('grade-chips');
+  const classChips = document.getElementById('class-chips');
+  const periodChips = document.getElementById('period-chips');
+  const stepClass = document.getElementById('step-class');
+  const stepPeriod = document.getElementById('step-period');
+  const stampBtn = document.getElementById('stamp-btn');
+  const hint = document.getElementById('hint');
+  const overlay = document.getElementById('stamp-overlay');
+  const stampDetail = document.getElementById('stamp-detail');
+
+  function renderChips(container, items, key) {
+    container.innerHTML = '';
+    items.forEach(function (label) {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = label;
+      btn.type = 'button';
+      btn.addEventListener('click', function () {
+        state[key] = label;
+        Array.from(container.children).forEach(function (c) { c.classList.remove('selected'); });
+        btn.classList.add('selected');
+        onSelectionChanged(key);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function onSelectionChanged(key) {
+    if (key === 'grade') {
+      state.className = null;
+      const classes = (state.config.classesByGrade && state.config.classesByGrade[state.grade]) || [];
+      renderChips(classChips, classes, 'className');
+      stepClass.dataset.locked = 'false';
+      stepPeriod.dataset.locked = 'true';
+      state.period = null;
+      Array.from(periodChips.children).forEach(function (c) { c.classList.remove('selected'); });
+    }
+    if (key === 'className') { stepPeriod.dataset.locked = 'false'; }
+    updateStampButton();
+  }
+
+  function updateStampButton() {
+    const ready = state.grade && state.className && state.period;
+    stampBtn.disabled = !ready;
+    hint.textContent = ready ? '内容を確認してスタンプを押してください' : '学年・クラス・時間目を選んでください';
+  }
+
+  function resetForm() {
+    state.grade = null; state.className = null; state.period = null;
+    Array.from(gradeChips.children).forEach(function (c) { c.classList.remove('selected'); });
+    classChips.innerHTML = ''; periodChips.innerHTML = '';
+    stepClass.dataset.locked = 'true'; stepPeriod.dataset.locked = 'true';
+    updateStampButton();
+  }
+
+  async function loadConfig() {
+    try {
+      const res = await fetch(API_URL, { method: 'GET' });
+      const data = await res.json();
+      state.config = data.config;
+      renderChips(gradeChips, state.config.grades || [], 'grade');
+      renderChips(periodChips, state.config.periods || [], 'period');
+      hint.textContent = '学年・クラス・時間目を選んでください';
+    } catch (err) {
+      hint.textContent = '読み込みに失敗しました。先生に確認してください。';
+    }
+  }
+
+  stampBtn.addEventListener('click', async function () {
+    if (stampBtn.disabled) return;
+    stampBtn.disabled = true;
+    hint.textContent = '記録しています…';
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'log', grade: state.grade, className: state.className, period: state.period })
+      });
+      stampDetail.textContent = state.grade + ' ' + state.className + ' / ' + state.period;
+      overlay.classList.add('show');
+      setTimeout(function () { overlay.classList.remove('show'); resetForm(); }, 1500);
+    } catch (err) {
+      hint.textContent = '送信に失敗しました。もう一度お試しください。';
+      stampBtn.disabled = false;
+    }
+  });
+
+  loadConfig();
+</script>
+</body>
+</html>
