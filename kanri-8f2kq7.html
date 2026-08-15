@@ -9,415 +9,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cover: #1f3a34;
-    --cover-dark: #0f211d;
-    --cover-edge: #2c4d45;
-    --paper: #f3eee1;
-    --paper-hi: #faf7ee;
-    --ink: #2b2620;
-    --ink-soft: #6b6357;
-    --line: #dcd2ba;
-    --stamp: #b23a2e;
-    --stamp-dark: #7e2419;
-    --gold: #c9a227;
-    --gold-soft: #eddb96;
-    --gold-hi: #fff3c4;
+    --cover: #1f3a34; --cover-dark: #0f211d; --cover-edge: #2c4d45;
+    --paper: #f3eee1; --paper-hi: #faf7ee; --ink: #2b2620; --ink-soft: #6b6357; --line: #dcd2ba;
+    --stamp: #b23a2e; --stamp-dark: #7e2419; --gold: #c9a227; --gold-soft: #eddb96; --gold-hi: #fff3c4;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; font-family: 'Noto Sans JP', sans-serif; color: var(--ink); }
   body {
-    min-height: 100vh;
-    padding: clamp(14px, 3vw, 36px);
-    position: relative;
-    background:
-      radial-gradient(circle at 20% -10%, var(--cover-edge) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 105%, #223f38 0%, transparent 50%),
-      linear-gradient(160deg, var(--cover) 0%, var(--cover-dark) 100%);
+    min-height: 100vh; padding: clamp(14px, 3vw, 36px); position: relative;
+    background: radial-gradient(circle at 20% -10%, var(--cover-edge) 0%, transparent 55%), radial-gradient(ellipse at 85% 105%, #223f38 0%, transparent 50%), linear-gradient(160deg, var(--cover) 0%, var(--cover-dark) 100%);
   }
-  body::before {
-    content: "";
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    opacity: 0.05; mix-blend-mode: overlay; pointer-events: none; z-index: 0;
-  }
-
-  .wrap { max-width: 980px; margin: 0 auto; position: relative; z-index: 1; }
-
+  .wrap { max-width: 640px; margin: 60px auto; position: relative; z-index: 1; }
   .page {
     background: linear-gradient(155deg, var(--paper-hi), var(--paper) 45%, #ece5d2 100%);
-    border-radius: 14px;
-    padding: 28px clamp(18px, 4vw, 36px) 34px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 22px;
-    box-shadow:
-      0 1px 0 var(--gold-hi) inset,
-      0 0 0 1px rgba(0,0,0,0.06),
-      0 34px 60px -24px rgba(0,0,0,0.6);
-    animation: riseIn 0.55s cubic-bezier(.2,.9,.25,1) both;
+    border-radius: 14px; padding: 30px clamp(20px, 4vw, 38px) 34px; position: relative; overflow: hidden;
+    box-shadow: 0 1px 0 var(--gold-hi) inset, 0 0 0 1px rgba(0,0,0,0.06), 0 34px 60px -24px rgba(0,0,0,0.6);
   }
-  .page:nth-of-type(2) { animation-delay: 0.08s; }
-  @keyframes riseIn { 0% { opacity: 0; transform: translateY(18px); } 100% { opacity: 1; transform: translateY(0); } }
-
-  .page::after {
-    content: "";
-    position: absolute; left: 0; top: 0; bottom: 0; width: 8px;
-    background: linear-gradient(to bottom, var(--gold), var(--gold-soft) 40%, var(--gold) 60%, var(--gold-soft));
-    box-shadow: 3px 0 10px rgba(0,0,0,0.25);
-  }
-
-  header {
-    display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px;
-    border-bottom: 2px solid var(--ink);
-    padding-bottom: 15px; margin-bottom: 22px;
-  }
+  .page::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: linear-gradient(to bottom, var(--gold), var(--gold-soft) 40%, var(--gold) 60%, var(--gold-soft)); box-shadow: 3px 0 10px rgba(0,0,0,0.25); }
   .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.28em; color: var(--ink-soft); text-transform: uppercase; }
   h1 {
-    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: clamp(22px, 4vw, 28px); margin: 5px 0 0;
+    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 900; font-size: clamp(22px, 4vw, 28px); margin: 6px 0 22px; padding-bottom: 16px; border-bottom: 2px solid var(--ink);
     background: linear-gradient(180deg, #4a3f1a 0%, var(--gold) 45%, #8a6a12 55%, var(--gold-hi) 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
-    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.5));
   }
-  .status { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); }
-
-  h2 {
-    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700; font-size: 17px; margin: 0 0 15px;
-    display: flex; align-items: center; gap: 9px;
+  p { line-height: 1.8; font-size: 14px; color: var(--ink); }
+  .card-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    text-decoration: none; color: var(--ink); border: 1.5px solid var(--ink); border-radius: 10px;
+    padding: 16px 18px; margin: 16px 0; transition: background .15s, color .15s, transform .1s;
   }
-  h2::before { content: ""; width: 9px; height: 9px; background: var(--stamp); border-radius: 50%; box-shadow: 0 0 0 3px rgba(178,58,46,0.15); display: inline-block; }
-
-  .grade-block {
-    border: 1.5px solid var(--line); border-radius: 12px; padding: 15px 17px; margin-bottom: 14px;
-    background: rgba(255,255,255,0.4);
-    transition: box-shadow 0.2s ease;
-  }
-  .grade-block:hover { box-shadow: 0 4px 14px rgba(43,38,32,0.08); }
-  .grade-block-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
-  .grade-name-input {
-    font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700; font-size: 16px;
-    border: none; border-bottom: 1.5px dashed var(--ink-soft); background: transparent; padding: 2px 2px 4px; width: 140px;
-  }
-  .grade-name-input:focus { outline: none; border-bottom-color: var(--stamp); }
-
-  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 11px; }
-  .tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--ink); color: var(--paper);
-    padding: 6px 8px 6px 13px; border-radius: 20px; font-size: 13px;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.15);
-  }
-  .tag button { background: none; border: none; color: var(--paper); opacity: 0.65; cursor: pointer; font-size: 14px; line-height: 1; padding: 2px; transition: opacity .15s; }
-  .tag button:hover { opacity: 1; color: var(--gold-hi); }
-
-  .add-row { display: flex; gap: 8px; }
-  input[type="text"] {
-    font-family: 'Noto Sans JP', sans-serif; font-size: 13px; padding: 9px 11px;
-    border: 1.5px solid var(--line); border-radius: 7px; background: white; flex: 1;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  input[type="text"]:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,162,39,0.15); }
-
-  .btn {
-    font-family: 'Noto Sans JP', sans-serif; font-weight: 500; font-size: 13px; padding: 8px 15px;
-    border-radius: 7px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer;
-    transition: background .15s ease, color .15s ease, transform .1s ease;
-  }
-  .btn:hover { background: var(--ink); color: var(--paper); }
-  .btn:active { transform: scale(0.96); }
-  .btn.remove-grade { border-color: var(--stamp); color: var(--stamp); font-size: 12px; padding: 6px 11px; }
-  .btn.remove-grade:hover { background: var(--stamp); color: white; }
-
-  .btn-primary {
-    background: var(--stamp); border-color: var(--stamp); color: white; font-weight: 700; padding: 12px 24px;
-    box-shadow: 0 4px 0 var(--stamp-dark), 0 10px 20px -8px rgba(178,58,46,0.5);
-  }
-  .btn-primary:hover { background: #9c3226; }
-  .btn-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--stamp-dark); }
-
-  .actions-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 10px; }
-  .save-status { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft); }
-
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 10px 11px; border-bottom: 1px solid var(--line); }
-  th { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--ink-soft); text-transform: uppercase; position: sticky; top: 0; background: var(--paper); }
-  td.time { font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: nowrap; }
-  tbody tr { transition: background .12s ease; }
-  tbody tr:hover { background: rgba(201,162,39,0.1); }
-  .empty-row td { text-align: center; color: var(--ink-soft); padding: 32px; }
-  .table-scroll { max-height: 440px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--line); }
-
-  .filters { display: flex; gap: 9px; margin-bottom: 15px; flex-wrap: wrap; }
-  select {
-    font-family: 'Noto Sans JP', sans-serif; font-size: 13px; padding: 8px 11px;
-    border-radius: 20px; border: 1.5px solid var(--line); background: white; cursor: pointer;
-  }
-  select:focus { outline: none; border-color: var(--gold); }
+  .card-link:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+  .card-link .t { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700; font-size: 15px; }
+  .card-link .d { font-size: 12px; color: var(--ink-soft); }
+  .card-link:hover .d { color: var(--gold-soft); }
+  .note { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); background: rgba(0,0,0,0.04); border-radius: 8px; padding: 12px 14px; margin-top: 20px; line-height: 1.7; }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="page">
-    <header>
-      <div>
-        <div class="eyebrow">TABLET USAGE LOG — ADMIN</div>
-        <h1>管理画面</h1>
-      </div>
-      <div class="status" id="status">読み込み中…</div>
-    </header>
+    <div class="eyebrow">TABLET USAGE LOG — ADMIN</div>
+    <h1>管理メモ</h1>
 
-    <h2>学年・クラス設定</h2>
-    <div id="grade-blocks"></div>
-    <div class="btn" id="add-grade-btn" style="display:inline-block;margin-top:4px;">+ 学年を追加</div>
+    <p>記録はGoogleフォームの回答として自動でスプレッドシートに溜まっていきます。一覧を見るには、フォームの「回答」タブから開いてください。</p>
 
-    <h2 style="margin-top:28px;">時間目の設定</h2>
-    <div class="tag-list" id="period-tags"></div>
-    <div class="add-row">
-      <input type="text" id="period-input" placeholder="例: 7時間目" />
-      <button class="btn" id="add-period-btn">追加</button>
-    </div>
+    <a class="card-link" href="https://docs.google.com/forms/d/e/1FAIpQLScDySEimjLmMI4MQD4k4n9e7Ytp-Jaw_Kv8MHNBk_uUjCt74w/viewform" target="_blank" rel="noopener">
+      <div><div class="t">生徒用フォームを開く</div><div class="d">実際の入力画面の確認用</div></div>
+      <div>→</div>
+    </a>
 
-    <div class="actions-row">
-      <button class="btn btn-primary" id="save-btn">設定を保存する</button>
-      <span class="save-status" id="save-status"></span>
+    <a class="card-link" href="https://docs.google.com/forms/d/1FAIpQLScDySEimjLmMI4MQD4k4n9e7Ytp-Jaw_Kv8MHNBk_uUjCt74w/edit" target="_blank" rel="noopener">
+      <div><div class="t">フォームを編集する</div><div class="d">質問文などを変えたいとき</div></div>
+      <div>→</div>
+    </a>
+
+    <div class="note">
+      学年・クラス・時間目の選択肢を変えたいときは、index.html の中の「CONFIG」という部分をGitHub上で直接編集してください（前にファイル名を直したときと同じ「鉛筆マークで編集」の操作です）。<br><br>
+      記録一覧は、Googleフォームの編集画面を開き、上部の「回答」タブ→緑のスプレッドシートのアイコンから開けます。
     </div>
   </div>
-
-  <div class="page">
-    <header>
-      <div>
-        <div class="eyebrow">RECORDS</div>
-        <h1>利用記録一覧</h1>
-      </div>
-      <button class="btn" id="refresh-btn">更新</button>
-    </header>
-
-    <div class="filters">
-      <select id="filter-grade"><option value="">学年: すべて</option></select>
-      <select id="filter-class"><option value="">クラス: すべて</option></select>
-    </div>
-
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>日時</th><th>学年</th><th>クラス</th><th>時間目</th></tr></thead>
-        <tbody id="log-body"><tr class="empty-row"><td colspan="4">読み込み中…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
 </div>
-
-<script>
-  const API_URL = "https://script.google.com/a/macros/school.yachiyo.ed.jp/s/AKfycbx39ovSBCuCR45RS3vUkKBWdgCh95K1_11ZWdhgNSF3eJlGRPQmZ8m9codI7NHvN1EK/exec";
-
-  let config = { grades: [], classesByGrade: {}, periods: [] };
-  let allLogs = [];
-
-  const gradeBlocks = document.getElementById('grade-blocks');
-  const periodTags = document.getElementById('period-tags');
-  const statusEl = document.getElementById('status');
-  const saveStatus = document.getElementById('save-status');
-  const logBody = document.getElementById('log-body');
-  const filterGrade = document.getElementById('filter-grade');
-  const filterClass = document.getElementById('filter-class');
-
-  function renderConfig() {
-    gradeBlocks.innerHTML = '';
-    config.grades.forEach(function (grade, gIdx) {
-      const block = document.createElement('div');
-      block.className = 'grade-block';
-
-      const head = document.createElement('div');
-      head.className = 'grade-block-head';
-
-      const nameInput = document.createElement('input');
-      nameInput.className = 'grade-name-input';
-      nameInput.type = 'text';
-      nameInput.value = grade;
-      nameInput.addEventListener('change', function () {
-        const newName = nameInput.value.trim();
-        if (!newName || newName === grade) { nameInput.value = grade; return; }
-        config.classesByGrade[newName] = config.classesByGrade[grade] || [];
-        delete config.classesByGrade[grade];
-        config.grades[gIdx] = newName;
-        renderConfig();
-      });
-
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'btn remove-grade';
-      removeBtn.textContent = '学年を削除';
-      removeBtn.addEventListener('click', function () {
-        delete config.classesByGrade[grade];
-        config.grades.splice(gIdx, 1);
-        renderConfig();
-      });
-
-      head.appendChild(nameInput);
-      head.appendChild(removeBtn);
-      block.appendChild(head);
-
-      const tagList = document.createElement('div');
-      tagList.className = 'tag-list';
-      (config.classesByGrade[grade] || []).forEach(function (cls, cIdx) {
-        const tag = document.createElement('span');
-        tag.className = 'tag';
-        tag.textContent = cls;
-        const x = document.createElement('button');
-        x.textContent = '×';
-        x.addEventListener('click', function () {
-          config.classesByGrade[grade].splice(cIdx, 1);
-          renderConfig();
-        });
-        tag.appendChild(x);
-        tagList.appendChild(tag);
-      });
-      block.appendChild(tagList);
-
-      const addRow = document.createElement('div');
-      addRow.className = 'add-row';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = '例: 4組';
-      const addBtn = document.createElement('button');
-      addBtn.className = 'btn';
-      addBtn.textContent = '追加';
-      function addClass() {
-        const val = input.value.trim();
-        if (!val) return;
-        if (!config.classesByGrade[grade]) config.classesByGrade[grade] = [];
-        config.classesByGrade[grade].push(val);
-        renderConfig();
-      }
-      addBtn.addEventListener('click', addClass);
-      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') addClass(); });
-      addRow.appendChild(input);
-      addRow.appendChild(addBtn);
-      block.appendChild(addRow);
-
-      gradeBlocks.appendChild(block);
-    });
-
-    periodTags.innerHTML = '';
-    config.periods.forEach(function (p, idx) {
-      const tag = document.createElement('span');
-      tag.className = 'tag';
-      tag.textContent = p;
-      const x = document.createElement('button');
-      x.textContent = '×';
-      x.addEventListener('click', function () {
-        config.periods.splice(idx, 1);
-        renderConfig();
-      });
-      tag.appendChild(x);
-      periodTags.appendChild(tag);
-    });
-
-    renderFilters();
-  }
-
-  document.getElementById('add-grade-btn').addEventListener('click', function () {
-    let base = '新しい学年'; let name = base; let n = 1;
-    while (config.grades.includes(name)) { n++; name = base + n; }
-    config.grades.push(name);
-    config.classesByGrade[name] = [];
-    renderConfig();
-  });
-
-  document.getElementById('add-period-btn').addEventListener('click', function () {
-    const input = document.getElementById('period-input');
-    const val = input.value.trim();
-    if (!val) return;
-    config.periods.push(val);
-    input.value = '';
-    renderConfig();
-  });
-
-  document.getElementById('save-btn').addEventListener('click', async function () {
-    saveStatus.textContent = '保存しています…';
-    try {
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'saveConfig', config: config })
-      });
-      saveStatus.textContent = '保存しました ✓';
-      setTimeout(function () { saveStatus.textContent = ''; }, 2500);
-    } catch (err) {
-      saveStatus.textContent = '保存に失敗しました';
-    }
-  });
-
-  function renderFilters() {
-    const curGrade = filterGrade.value;
-    filterGrade.innerHTML = '<option value="">学年: すべて</option>';
-    config.grades.forEach(function (g) {
-      const opt = document.createElement('option');
-      opt.value = g; opt.textContent = g;
-      filterGrade.appendChild(opt);
-    });
-    filterGrade.value = curGrade;
-    renderClassFilterOptions();
-  }
-
-  function renderClassFilterOptions() {
-    const grade = filterGrade.value;
-    const curClass = filterClass.value;
-    filterClass.innerHTML = '<option value="">クラス: すべて</option>';
-    const classes = grade ? (config.classesByGrade[grade] || []) : Array.from(new Set(Object.values(config.classesByGrade).flat()));
-    classes.forEach(function (c) {
-      const opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
-      filterClass.appendChild(opt);
-    });
-    filterClass.value = curClass;
-  }
-
-  filterGrade.addEventListener('change', function () { renderClassFilterOptions(); renderLogs(); });
-  filterClass.addEventListener('change', renderLogs);
-
-  function renderLogs() {
-    const g = filterGrade.value;
-    const c = filterClass.value;
-    const filtered = allLogs.filter(function (row) { return (!g || row.grade === g) && (!c || row.className === c); });
-    logBody.innerHTML = '';
-    if (filtered.length === 0) {
-      logBody.innerHTML = '<tr class="empty-row"><td colspan="4">記録がありません</td></tr>';
-      return;
-    }
-    filtered.forEach(function (row) {
-      const tr = document.createElement('tr');
-      const d = new Date(row.timestamp);
-      const timeStr = isNaN(d) ? row.timestamp : d.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-      tr.innerHTML = '<td class="time">' + timeStr + '</td><td>' + row.grade + '</td><td>' + row.className + '</td><td>' + row.period + '</td>';
-      logBody.appendChild(tr);
-    });
-  }
-
-  async function loadConfig() {
-    const res = await fetch(API_URL, { method: 'GET' });
-    const data = await res.json();
-    config = data.config;
-    renderConfig();
-  }
-
-  async function loadLogs() {
-    const res = await fetch(API_URL + '?action=logs', { method: 'GET' });
-    const data = await res.json();
-    allLogs = data.logs || [];
-    renderLogs();
-  }
-
-  document.getElementById('refresh-btn').addEventListener('click', loadLogs);
-
-  (async function init() {
-    try {
-      await loadConfig();
-      await loadLogs();
-      statusEl.textContent = '読み込み完了 · ' + new Date().toLocaleTimeString('ja-JP');
-    } catch (err) {
-      statusEl.textContent = '読み込みに失敗しました';
-    }
-  })();
-</script>
 </body>
 </html>
